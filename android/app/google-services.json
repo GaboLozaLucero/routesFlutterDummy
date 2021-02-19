@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "919429813912",
+    "project_id": "routesv1",
+    "storage_bucket": "routesv1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:919429813912:android:9eb8bbd8f2a495d94362ed",
+        "android_client_info": {
+          "package_name": "com.example.routes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "919429813912-5cslnb57amlasos2369ece5fkji3svqc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAvTp2DZ0dbfAgg8qDbjEzANBLljTBHE64"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "919429813912-5cslnb57amlasos2369ece5fkji3svqc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
