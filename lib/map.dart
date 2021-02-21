@@ -166,24 +166,63 @@ class _MapState extends State<Map> {
     List<PolylineWayPoint> wayPoint = [
       PolylineWayPoint(location: '$waypointLatitude, $waypointLongitude')
     ];
+
     PolylineResult result = await polylinePoints?.getRouteBetweenCoordinates(
-        googleAPIKey, origen, destination,
-        travelMode: TravelMode.walking, wayPoints: wayPoint);
-    result.points.forEach((element) {
-      polylineCoordinates.add(LatLng(element.latitude, element.longitude));
-    });
-    setState(() {
+      googleAPIKey,
+      origen,
+      destination,
+      travelMode: TravelMode.walking,
+      wayPoints: wayPoint,
+    );
+
+    final closestCoord = result.points[0];
+    double closesDist = _manDistance(closestCoord.latitude,
+        closestCoord.longitude, waypointLatitude, waypointLongitude);
+    int closestIndex = 0;
+
+    for (int i = 1; i < result.points.length; i++) {
+      final candidateDist = _manDistance(result.points[i].latitude,
+          result.points[i].longitude, waypointLatitude, waypointLongitude);
+
+      if (candidateDist < closesDist) {
+        closesDist = candidateDist;
+        closestIndex = i;
+      }
+    }
+    for (int i = 0; i < result.points.length - 1; i++) {
+      Color polylineColor;
+      int polylineWidth;
+      if (i < closestIndex) {
+        polylineColor = Colors.red;
+        polylineWidth = 6;
+      } else {
+        polylineColor = Colors.green;
+        polylineWidth = 3;
+      }
+
       Polyline polyline = Polyline(
-        polylineId: PolylineId("poly"),
-        color: Colors.amber,
-        points: polylineCoordinates,
-        width: 5,
+        polylineId: PolylineId(i.toString()),
+        color: polylineColor,
+        points: [
+          LatLng(result.points[i].latitude, result.points[i].longitude),
+          LatLng(result.points[i + 1].latitude, result.points[i + 1].longitude)
+        ],
+        width: polylineWidth,
+        jointType: JointType.round,
         endCap: Cap.roundCap,
-        consumeTapEvents: true,
+        // consumeTapEvents: true,
         startCap: Cap.roundCap,
       );
       _polylines.add(polyline);
-    });
+    }
+  }
+
+  _manDistance(double candidateLat, double candidateLong, double waypointLat,
+      double waypointLong) {
+    final manDistance = ((candidateLat - waypointLat).abs() +
+            (candidateLong - waypointLong).abs()) *
+        1000;
+    return manDistance;
   }
 
   _displayErrorCoordinates(BuildContext context) {
@@ -224,6 +263,7 @@ class _MapState extends State<Map> {
                   waypointLatitude = 0;
                   waypointLongitude = 0;
                   polylineCoordinates.clear();
+                  _polylines.clear();
                 });
               }),
           IconButton(
